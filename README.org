@@ -3,61 +3,15 @@
 
 This library provides an abstract class and CLOS APIs for the trainable funcallable instances.
 
+The library is almost blank; It has no actual implementations in it.
+Its sole purpose is to provide the interface for a machine learning model.
+
 ** API
 
-: Class TRAINABLE-OBJECT
-
-This is a subclass of =funcallable-standard-class= and =serializable-object=.
-It represents a function-like object that is trainable from data,
-and is serializable so that it can save its learned parameters.
-
-It has two slots TRAIN-ACCURACY and TEST-ACCURACY which is initially unbound.
-These slots are completely optional and are only there for verifying the model
-accuracy after the object was retrieved from the stored file.
-
-TRAINABLE-OBJECT instance is funcallable with a signature
-
-: (funcall INSTANCE INPUT &key BATCH VERBOSE &allow-other-keys).
-
-Its behavior depends on whether INPUT is a funcallable object (a function or a funcallable-standard-object)
-or an object of other types.
-
-In the former case, a COMPOSE method is invoked on INSTANCE and INPUT.
-The result should be an instance of a function or a funcallable-standard-object.
-
-When INSTANCE and INPUT are both TRAINABLE-OBJECT instances, and are composable (e.g. two neural networks),
-it should returns a new TRAINABLE-OBJECT instance which represents the composed function and is trainable.
-
-When INPUT is not a funcallable instances, it is assumed to be a data.
-It invokes PREDICT method using the arguments and returns a predicted output.
-
-: Generic Function (train model input output &key batch verbose test-input test-output &allow-other-keys)
-
-Train a model using the input / output.
-When BATCH is non-nil, it assumes a batch (multiple data points) input.
-The responsibility for handling this parameter properly is on the method that implements the behavior.
-In general, when BATCH is an INTEGER value, it is assumed to be the batch processing size.
-
-: Generic Function (evaluate model input output &key batch verbose test-input test-output &allow-other-keys)
-
-Evaluate a model.
-When BATCH is non-nil, it assumes a batch (multiple data points) input.
-The responsibility for handling this parameter properly is on the method that implements the behavior.
-In general, when BATCH is an INTEGER value, it is assumed to be the batch processing size.
-
-: Generic Function (predict model input &key batch verbose &allow-other-keys)
-
-Predict a model using the pathname stored in the model.
-When BATCH is non-nil, it assumes a batch (multiple data points) input.
-The responsibility for handling this parameter properly is on the method that implements the behavior.
-In general, when BATCH is an INTEGER value, it is assumed to be the batch processing size.
-
-: Generic Function (compose model1 model2 &key verbose &allow-other-keys)
-
-Compose a model MODEL1 with another upstream model MODEL2.
-Returns a funcallable instance, either simply a function/closure or a merged TRAINABLE-OBJECT instance
-that can be trained end-to-end (e.g. a neural network layer).
-
+: Class TRAINABLE-OBJECT (SERIALIZABLE-OBJECT)
+: Generic Function (train    model input output &key verbose val-input val-output test-input test-output &allow-other-keys)
+: Generic Function (evaluate model input output &key verbose &allow-other-keys)
+: Generic Function (predict  model input        &key verbose &allow-other-keys)
 
 ** Dependencies
 This library is at least tested on implementation listed below:
